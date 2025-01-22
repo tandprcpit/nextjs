@@ -96,7 +96,7 @@ const Header = () => {
               className="w-10 h-10"
             />
             <div className="flex flex-col">
-              <span className="text-lg font-bold text-[#244855]">Prajakta Mahajan</span>
+              <span className="text-lg font-bold text-[#244855]">Training and Placement</span>
               <span className="text-xs text-[#90AEAD]">R. C. Patel Institute of Technology, Shirpur</span>
             </div>
           </Link>
