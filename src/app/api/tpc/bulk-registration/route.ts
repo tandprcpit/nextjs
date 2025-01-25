@@ -49,13 +49,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
         await newUser.save();
 
-        // Send credentials email
-        await sendCredentialsEmail(
+      console.log("newUser",newUser);
+
+       const result1 =  await sendCredentialsEmail(
           student.email,
           student.prn,
           password,
           student.department
         );
+     
 
         results.push({ prn: student.prn, status: 'success' });
       } catch (error) {

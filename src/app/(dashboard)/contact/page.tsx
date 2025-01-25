@@ -1,4 +1,5 @@
-"use client";
+
+
 import React, { useState } from "react";
 import emailjs from "@emailjs/browser";
 import { Label } from "@/components/ui/label_aceternity";
