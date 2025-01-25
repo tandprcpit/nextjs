@@ -115,7 +115,7 @@ export async function sendCredentialsEmail(
 
             <p>You can log in using either your <strong>PRN</strong> or <strong>Email</strong> along with your password. Please remember to change your password after your first login.</p>
 
-            <a href="https://rcpit-tnp.vercel.app/sign-in" class="cta-button">Login Now</a>
+            <a href="https://tandp-rcpit.vercel.app/sign-in" class="cta-button">Login Now</a>
 
             <p>If you did not request this account, please contact the administration immediately.</p>
         </div>
@@ -135,7 +135,7 @@ export async function sendCredentialsEmail(
       html: emailHtml,
     });
 
-    return { success: true, message: 'Credentials email sent successfully' };
+    return { success: true, message: `Credentials email sent successfully ${email}` };
   } catch (emailError) {
     console.error("Error sending credentials email", emailError);
     return { success: false, message: 'Failed to send credentials email' };
