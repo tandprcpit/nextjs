@@ -1,3 +1,4 @@
+// app/api/fetch-all-students/route.ts
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/options';
 import dbConnect from '@/lib/dbConnect';
@@ -6,6 +7,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const session = await getServerSession(authOptions);
+  const { searchParams } = new URL(request.url);
+  const year = searchParams.get('year');
   
   if (!session || !session.user) {
     return NextResponse.json({
@@ -17,10 +20,15 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   await dbConnect();
 
   try {
-   
+    // Build the match query
+    const matchQuery: any = { isProfileComplete: true };
+    if (year) {
+      matchQuery.passoutYear = parseInt(year);
+    }
+
     const users = await UserModel.aggregate([
-      { $match: { isProfileComplete: true } },  
-      { $sample: { size: await UserModel.countDocuments({ isProfileComplete: true }) } },
+      { $match: matchQuery },  
+      { $sample: { size: await UserModel.countDocuments(matchQuery) } },
       { 
         $project: { 
           username: 1,
@@ -46,7 +54,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json({
       success: true,
-      message: 'All users data retrieved successfully in random sequence',
+      message: 'Users data retrieved successfully',
       users: users
     }, { status: 200 });
 
