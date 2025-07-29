@@ -23,20 +23,21 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         const {
             name,
             description,
-            salary,
+           
             bond,
             location,
+            profiles,
             criteria,
             rounds,
         } = await request.json();
 
      console.log("criteria",criteria);
 
-        if (!name || !salary || !location) {
+        if (!name || !profiles || !Array.isArray(profiles) || profiles.length === 0 || !location) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: "Name, salary, and location are required fields.",
+                    message: "Name, location, and at least one profile are required.",
                 },
                 { status: 400 }
             );
@@ -101,9 +102,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         const newCompany = new CompanyModel({
             name,
             description,
-            salary,
+            
             bond,
             location,
+            profiles,
             criteria,
             rounds: allRounds, 
             createdBy: token?._id,

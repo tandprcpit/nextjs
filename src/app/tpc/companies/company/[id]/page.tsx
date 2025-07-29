@@ -14,331 +14,327 @@ import { NotWillingStudents } from '@/components/tpc/NotWillingStudents'
 import { CompanySkeleton } from '@/components/tpc/CompanySkeleton'
 
 interface PlacementDetails {
-  internshipPackage?: number;
-  fullTimePackage?: number;
-  positionInternship?: string;
-  positionFullTime?: string;
+  internshipPackage?: number
+  fullTimePackage?: number
+  positionInternship?: string
+  positionFullTime?: string
 }
 
 interface Company {
-  _id: string
-  name: string
-  description: string
-  salary: number
-  bond: string
-  location: string
-  criteria: {
-    overallCGPA: number
-    gender: string[]
-    passoutYear: number
-    anyLiveKTs: string
-    anyGapDuringEducation: string
-    department: string[]
-    tenthMarks: number
-    twelfthPercentage: number
-    diplomaPercentage: number
-    skills: string[]
-  }
-  rounds: {
-    roundNumber: number
-    roundName: string
-    selectedStudents: Student[]
-  }[]
-  placedStudents: {
-    student: string
-    internshipPackage?: number
-    fullTimePackage?: number
-    positionInternship?: string
-    positionFullTime?: string
-  }[]
-  willingnessRequests: {
-    student: string
-    deadline: string
-  }[]
-  notWillingStudents: {
-    student: string
-    reason: string
-  }[]
+  _id: string
+  name: string
+  description: string
+  profiles: { companyPositionTitle: string; package: number }[]
+  bond: string
+  location: string
+  criteria: {
+    overallCGPA: number
+    gender: string[]
+    passoutYear: number
+    anyLiveKTs: string
+    anyGapDuringEducation: string
+    department: string[]
+    tenthMarks: number
+    twelfthPercentage: number
+    diplomaPercentage: number
+    skills: string[]
+  }
+  rounds: {
+    roundNumber: number
+    roundName: string
+    selectedStudents: Student[]
+  }[]
+  placedStudents: {
+    student: string
+    internshipPackage?: number
+    fullTimePackage?: number
+    positionInternship?: string
+    positionFullTime?: string
+  }[]
+  willingnessRequests: {
+    student: string
+    deadline: string
+  }[]
+  notWillingStudents: {
+    student: string
+    reason: string
+  }[]
 }
 
 interface Student {
-  _id: string
-  firstName: string
-  middleName:string
-  lastName: string
-  email: string
-  department: string
-  username: string
-  image: string
-  city: string
-  twelfthDiploma: string
-  overallCGPA: number
-  tenthMarks: number
-  twelfthDiplomaPercentage: number
+  _id: string
+  firstName: string
+  middleName: string
+  lastName: string
+  email: string
+  department: string
+  username: string
+  image: string
+  city: string
+  twelfthDiploma: string
+  overallCGPA: number
+  tenthMarks: number
+  twelfthDiplomaPercentage: number
 }
 
 export default function SingleCompanyPage() {
-  const [company, setCompany] = useState<Company | null>(null)
-  const [loading, setLoading] = useState(true)
-  const params = useParams<{ id: string }>()
- 
-  useEffect(() => {
-    async function fetchCompany() {
-      try {
-        const response = await axios.get(`/api/tpc/get-company/${params.id}`)
-        setCompany(response.data.company)
-      } catch (error) {
-        console.error('Failed to fetch company:', error)
-        toast({
-          title: "Error",
-          description: "Failed to fetch company details. Please try again.",
-          variant: "destructive",
-        })
-      } finally {
-        setLoading(false)
-      }
-    }
+  const [company, setCompany] = useState<Company | null>(null)
+  const [loading, setLoading] = useState(true)
+  const params = useParams<{ id: string }>()
 
-    if (params.id) {
-      fetchCompany()
-    }
-  }, [params.id])
+  useEffect(() => {
+    async function fetchCompany() {
+      try {
+        const response = await axios.get(`/api/tpc/get-company/${params.id}`)
+        setCompany(response.data.company)
+      } catch (error) {
+        console.error('Failed to fetch company:', error)
+        toast({
+          title: "Error",
+          description: "Failed to fetch company details. Please try again.",
+          variant: "destructive",
+        })
+      } finally {
+        setLoading(false)
+      }
+    }
 
-  const handleDelete = async (roundNumber: number, selectedStudents: string[]) => {
-    if (!company) return
+    if (params.id) {
+      fetchCompany()
+    }
+  }, [params.id])
 
-    const updatedRounds = company.rounds.map(round => {
-      if (round.roundNumber === roundNumber) {
-        return {
-          ...round,
-          selectedStudents: round.selectedStudents.filter(
-            student => !selectedStudents.includes(student._id)
-          )
-        }
-      }
-      return round
-    })
+  const handleDelete = async (roundNumber: number, selectedStudents: string[]) => {
+    if (!company) return
 
-    setCompany({ ...company, rounds: updatedRounds })
+    const updatedRounds = company.rounds.map(round => {
+      if (round.roundNumber === roundNumber) {
+        return {
+          ...round,
+          selectedStudents: round.selectedStudents.filter(
+            student => !selectedStudents.includes(student._id)
+          )
+        }
+      }
+      return round
+    })
 
-    toast({
-      title: "Students Removed",
-      description: `Selected students have been removed from Round ${roundNumber}.`,
-    })
-  }
+    setCompany({ ...company, rounds: updatedRounds })
 
-  const handleSave = async (roundNumber: number, selectedStudents: Student[]) => {
-    if (!company) return
+    toast({
+      title: "Students Removed",
+      description: `Selected students have been removed from Round ${roundNumber}.`,
+    })
+  }
 
-    try {
-      await axios.patch(`/api/tpc/update-round/${params.id}`, {
-        roundNumber,
-        selectedStudents: selectedStudents.map(student => student._id)
-      })
-      toast({
-        title: "Changes Saved",
-        description: `Round ${roundNumber} has been updated successfully.`,
-      })
-    } catch (error) {
-      console.error('Failed to save changes:', error)
-      toast({
-        title: "Error",
-        description: "Failed to save changes. Please try again.",
-        variant: "destructive",
-      })
-    }
-  }
+  const handleSave = async (roundNumber: number, selectedStudents: Student[]) => {
+    if (!company) return
 
-  const handleSearchStudents = async (query: string, passoutYear: number) => {
-    try {
-      const response = await axios.get(`/api/tpc/search-students`, {
-        params: { query, passoutYear }
-      })
-      return response.data.students
-    } catch (error) {
-      console.error('Failed to search students:', error)
-      toast({
-        title: "Error",
-        description: "Failed to search students. Please try again.",
-        variant: "destructive",
-      })
-      return []
-    }
-  }
+    try {
+      await axios.patch(`/api/tpc/update-round/${params.id}`, {
+        roundNumber,
+        selectedStudents: selectedStudents.map(student => student._id)
+      })
+      toast({
+        title: "Changes Saved",
+        description: `Round ${roundNumber} has been updated successfully.`,
+      })
+    } catch (error) {
+      console.error('Failed to save changes:', error)
+      toast({
+        title: "Error",
+        description: "Failed to save changes. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
 
-  const handleUpdateRound = (updatedRound: Company['rounds'][0]) => {
-    if (!company) return
-    const updatedRounds = company.rounds.map(round =>
-      round.roundNumber === updatedRound.roundNumber ? updatedRound : round
-    )
-    setCompany({ ...company, rounds: updatedRounds })
-  }
+  const handleSearchStudents = async (query: string, passoutYear: number) => {
+    try {
+      const response = await axios.get(`/api/tpc/search-students`, {
+        params: { query, passoutYear }
+      })
+      return response.data.students
+    } catch (error) {
+      console.error('Failed to search students:', error)
+      toast({
+        title: "Error",
+        description: "Failed to search students. Please try again.",
+        variant: "destructive",
+      })
+      return []
+    }
+  }
 
-  const handleAddToNextRound = (currentRoundNumber: number, selectedStudents: Student[]) => {
-    if (!company) return
+  const handleUpdateRound = (updatedRound: Company['rounds'][0]) => {
+    if (!company) return
+    const updatedRounds = company.rounds.map(round =>
+      round.roundNumber === updatedRound.roundNumber ? updatedRound : round
+    )
+    setCompany({ ...company, rounds: updatedRounds })
+  }
 
-    const updatedRounds = company.rounds.map((round, index) => {
-      if (round.roundNumber === currentRoundNumber + 1) {
-        return {
-          ...round,
-          selectedStudents: [...round.selectedStudents, ...selectedStudents]
-        }
-      }
-      return round
-    })
+  const handleAddToNextRound = (currentRoundNumber: number, selectedStudents: Student[]) => {
+    if (!company) return
 
-    setCompany({ ...company, rounds: updatedRounds })
+    const updatedRounds = company.rounds.map((round) => {
+      if (round.roundNumber === currentRoundNumber + 1) {
+        return {
+          ...round,
+          selectedStudents: [...round.selectedStudents, ...selectedStudents]
+        }
+      }
+      return round
+    })
 
-    toast({
-      title: "Students Added to Next Round",
-      description: `Selected students have been added to Round ${currentRoundNumber + 1}.`,
-    })
-  }
+    setCompany({ ...company, rounds: updatedRounds })
 
-  const handleUpdatePlacementStatus = async (studentId: string, placementDetails: PlacementDetails) => {
-    if (!company) return
+    toast({
+      title: "Students Added to Next Round",
+      description: `Selected students have been added to Round ${currentRoundNumber + 1}.`,
+    })
+  }
 
-    try {
-      await axios.post(`/api/tpc/update-placement-status`, {
-        studentId,
-        companyId: company._id,
-        ...placementDetails
-      })
+  const handleUpdatePlacementStatus = async (studentId: string, placementDetails: PlacementDetails) => {
+    if (!company) return
 
-      const updatedPlacedStudents = [
-        ...company.placedStudents.filter(ps => ps.student !== studentId),
-        { student: studentId, ...placementDetails }
-      ]
+    try {
+      await axios.post(`/api/tpc/update-placement-status`, {
+        studentId,
+        companyId: company._id,
+        ...placementDetails
+      })
 
-      setCompany({ ...company, placedStudents: updatedPlacedStudents })
+      const updatedPlacedStudents = [
+        ...company.placedStudents.filter(ps => ps.student !== studentId),
+        { student: studentId, ...placementDetails }
+      ]
 
-      toast({
-        title: "Placement Status Updated",
-        description: `Student placement status has been updated successfully.`,
-      })
-    } catch (error) {
-      console.error('Failed to update placement status:', error)
-      toast({
-        title: "Error",
-        description: "Failed to update placement status. Please try again.",
-        variant: "destructive",
-      })
-    }
-  }
+      setCompany({ ...company, placedStudents: updatedPlacedStudents })
 
-  const handleRemovePlacementStatus = async (studentId: string, companyId: string) => {
-    if (!company) return
+      toast({
+        title: "Placement Status Updated",
+        description: `Student placement status has been updated successfully.`,
+      })
+    } catch (error) {
+      console.error('Failed to update placement status:', error)
+      toast({
+        title: "Error",
+        description: "Failed to update placement status. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
 
-    try {
-      await axios.post(`/api/tpc/remove-placement-status`, {
-        studentId,
-        companyId
-      })
+  const handleRemovePlacementStatus = async (studentId: string, companyId: string) => {
+    if (!company) return
 
-      const updatedPlacedStudents = company.placedStudents.filter(ps => ps.student !== studentId)
+    try {
+      await axios.post(`/api/tpc/remove-placement-status`, {
+        studentId,
+        companyId
+      })
 
-      setCompany({ ...company, placedStudents: updatedPlacedStudents })
+      const updatedPlacedStudents = company.placedStudents.filter(ps => ps.student !== studentId)
 
-      toast({
-        title: "Placement Status Removed",
-        description: "Student placement status has been removed successfully.",
-      })
-    } catch (error) {
-      console.error('Failed to remove placement status:', error)
-      toast({
-        title: "Error",
-        description: "Failed to remove placement status. Please try again.",
-        variant: "destructive",
-      })
-    }
-  }
+      setCompany({ ...company, placedStudents: updatedPlacedStudents })
 
-  if (loading) {
-    return <CompanySkeleton />
-  }
+      toast({
+        title: "Placement Status Removed",
+        description: "Student placement status has been removed successfully.",
+      })
+    } catch (error) {
+      console.error('Failed to remove placement status:', error)
+      toast({
+        title: "Error",
+        description: "Failed to remove placement status. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
 
-  if (!company) {
-    return <div className="text-center text-2xl text-[#244855]">Company not found</div>
-  }
+  if (loading) return <CompanySkeleton />
+  if (!company) return <div className="text-center text-2xl text-[#244855]">Company not found</div>
 
-  return (
-    <div className="container mx-auto p-6 space-y-8">
-      <Link
-        href="/tpc/companies"
-        className="inline-flex items-center text-[#244855] hover:text-[#E64833] transition-colors"
-      >
-        <ChevronLeft className="mr-2 h-4 w-4" />
-        Back to Companies
-      </Link>
+  const maxPackage = Math.max(...(company?.profiles?.map(p => p.package) || [0]))
 
-      <div className="grid gap-8 md:grid-cols-3">
-        <CompanyDetails
-          name={company.name}
-          description={company.description}
-          location={company.location}
-          salary={company.salary}
-          bond={company.bond}
-        />
-        <EligibilityCriteria criteria={company.criteria} />
-      </div>
+  return (
+    <div className="container mx-auto p-6 space-y-8">
+      <Link
+        href="/tpc/companies"
+        className="inline-flex items-center text-[#244855] hover:text-[#E64833] transition-colors"
+      >
+        <ChevronLeft className="mr-2 h-4 w-4" />
+        Back to Companies
+      </Link>
 
-      <SelectionRounds
-        rounds={company.rounds}
-        onDelete={handleDelete}
-        onSave={handleSave}
-        onSearchStudents={handleSearchStudents}
-        passoutYear={company.criteria.passoutYear}
-        onUpdateRound={handleUpdateRound}
-        onAddToNextRound={handleAddToNextRound}
-        onUpdatePlacementStatus={handleUpdatePlacementStatus}
-        onRemovePlacementStatus={handleRemovePlacementStatus}
-        companyId={company._id}
-        companyName={company.name}
-        companyLocation={company.location}
-        companyPackage={company.salary}
-        companyBond={company.bond}
-        placedStudents={company.placedStudents}
-      />
+      <div className="grid gap-8 md:grid-cols-3">
+        <CompanyDetails
+          name={company.name}
+          description={company.description}
+          location={company.location}
+          bond={company.bond}
+          profiles={company.profiles}
+        />
+        <EligibilityCriteria criteria={company.criteria} />
+      </div>
 
-      <PlacedStudents
-        companyName={company.name}
-        companyLocation={company.location}
-        companyPackage={company.salary}
-        companyBond={company.bond}
-        placedStudents={company.placedStudents.map(ps => {
-          const student = company.rounds.flatMap(r => r.selectedStudents).find(s => s._id === ps.student);
-          return {
-            ...ps,
-            _id: ps.student,
-            firstName: student?.firstName || '',
-            middleName: student?.middleName || '',
-            lastName: student?.lastName || '',
-            email: student?.email || '',
-            department: student?.department || '',
-            username: student?.username || '',
-            image: student?.image || '/placeholder-user.jpg',
-            city: student?.city || '', 
-          };
-        })}
-      />
+      <SelectionRounds
+        rounds={company.rounds}
+        onDelete={handleDelete}
+        onSave={handleSave}
+        onSearchStudents={handleSearchStudents}
+        passoutYear={company.criteria.passoutYear}
+        onUpdateRound={handleUpdateRound}
+        onAddToNextRound={handleAddToNextRound}
+        onUpdatePlacementStatus={handleUpdatePlacementStatus}
+        onRemovePlacementStatus={handleRemovePlacementStatus}
+        companyId={company._id}
+        companyName={company.name}
+        companyLocation={company.location}
+        companyPackage={maxPackage}
+        companyBond={company.bond}
+        placedStudents={company.placedStudents}
+      />
 
-      <NotWillingStudents
-      companyName={company.name}
-        students={(company.notWillingStudents || []).map(nws => {
-          const student = company.rounds.flatMap(r => r.selectedStudents).find(s => s._id === nws.student);
-          return {
-            ...nws,
-            _id: nws.student,
-            firstName: student?.firstName || '',
-            middleName: student?.middleName || '',
-            lastName: student?.lastName || '',
-            email: student?.email || '',
-            department: student?.department || '',
-            username: student?.username || '',
-          };
-        })}
-      />
-    </div>
-  )
+      <PlacedStudents
+        companyName={company.name}
+        companyLocation={company.location}
+        companyPackage={maxPackage}
+        companyBond={company.bond}
+        placedStudents={company.placedStudents.map(ps => {
+          const student = company.rounds.flatMap(r => r.selectedStudents).find(s => s._id === ps.student);
+          return {
+            ...ps,
+            _id: ps.student,
+            firstName: student?.firstName || '',
+            middleName: student?.middleName || '',
+            lastName: student?.lastName || '',
+            email: student?.email || '',
+            department: student?.department || '',
+            username: student?.username || '',
+            image: student?.image || '/placeholder-user.jpg',
+            city: student?.city || '',
+          };
+        })}
+      />
+
+      <NotWillingStudents
+        companyName={company.name}
+        students={(company.notWillingStudents || []).map(nws => {
+          const student = company.rounds.flatMap(r => r.selectedStudents).find(s => s._id === nws.student);
+          return {
+            ...nws,
+            _id: nws.student,
+            firstName: student?.firstName || '',
+            middleName: student?.middleName || '',
+            lastName: student?.lastName || '',
+            email: student?.email || '',
+            department: student?.department || '',
+            username: student?.username || '',
+          };
+        })}
+      />
+    </div>
+  )
 }
-

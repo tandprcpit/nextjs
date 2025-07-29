@@ -1,11 +1,18 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+interface CompanyProfile{
+  companyPositionTitle:string;
+  package:number;
+
+}
+
 export interface Company extends Document {
   name: string;
   description: string;
-  salary: string;
+ 
   bond: string;
   location: string;
+  profiles:CompanyProfile[];
   criteria: {
     overallCGPA: number;
     gender: string[];
@@ -45,9 +52,12 @@ const CompanySchema: Schema<Company> = new Schema(
   {
     name: { type: String, required: [true, "Company name is required"] },
     description: { type: String },
-    salary: { type: String },
     bond: { type: String },
     location: { type: String },
+    profiles:[{
+      companyPositionTitle:{ type:String, required:true},
+      package:{type:String,required:true},
+    },],
     criteria: {
       overallCGPA: { type: Number },
       gender: { type: [String] },

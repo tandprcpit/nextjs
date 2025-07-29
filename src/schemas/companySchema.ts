@@ -3,9 +3,14 @@ import * as z from 'zod'
 export const companySchema = z.object({
   name: z.string().min(1, "Company name is required"),
   description: z.string().optional(),
-  salary: z.string().optional() ,
+  
   bond: z.string().optional(),
   location: z.string().min(1, "Location is required"),
+  profiles: z.array(z.object({
+  companyPositionTitle: z.string().min(1, "Role is required"),
+  package: z.number().min(0, "Salary must be positive"),
+})),
+
   criteria: z.object({
     overallCGPA:  z
     .number({
