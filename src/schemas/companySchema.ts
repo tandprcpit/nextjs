@@ -9,6 +9,7 @@ export const companySchema = z.object({
   profiles: z.array(z.object({
   companyPositionTitle: z.string().min(1, "Role is required"),
   package: z.number().min(0, "Salary must be positive"),
+description: z.string().optional(),
 })),
 
   criteria: z.object({

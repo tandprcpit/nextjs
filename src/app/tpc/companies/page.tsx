@@ -12,7 +12,7 @@ interface Company {
   _id: string
   name: string
   location: string
-  profiles: { companyPositionTitle: string; package: number }[]
+  profiles: { companyPositionTitle: string; package: number; description:string; }[]
   createdAt: string
 }
 

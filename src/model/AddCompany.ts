@@ -1,23 +1,24 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-interface CompanyProfile{
-  companyPositionTitle:string;
-  package:number;
-
+// Interface for the profile sub-document
+interface CompanyProfile {
+  companyPositionTitle: string;
+  package: number;
+  description: string;
 }
 
+// Main Company interface
 export interface Company extends Document {
   name: string;
   description: string;
- 
   bond: string;
   location: string;
-  profiles:CompanyProfile[];
+  profiles: CompanyProfile[];
   criteria: {
     overallCGPA: number;
     gender: string[];
     passoutYear: number;
-    anyLiveKTs: string;
+    anyLiveKTs: number; // Changed to number to match form
     anyGapDuringEducation: string[];
     department: string[];
     tenthMarks: number;
@@ -31,7 +32,7 @@ export interface Company extends Document {
     selectedStudents: mongoose.Types.ObjectId[];
   }[];
   placedStudents: {
-    student: mongoose.Schema.Types.ObjectId; 
+    student: mongoose.Schema.Types.ObjectId;
     internshipPackage?: number;
     fullTimePackage?: number;
     positionInternship?: string;
@@ -48,21 +49,25 @@ export interface Company extends Document {
   createdBy: mongoose.Types.ObjectId;
 }
 
+// Mongoose Schema Definition
 const CompanySchema: Schema<Company> = new Schema(
   {
     name: { type: String, required: [true, "Company name is required"] },
     description: { type: String },
     bond: { type: String },
     location: { type: String },
-    profiles:[{
-      companyPositionTitle:{ type:String, required:true},
-      package:{type:String,required:true},
-    },],
+    profiles: [{
+      companyPositionTitle: { type: String, required: true },
+      // FIXED: Changed package type from String to Number to match the form data
+      package: { type: Number, required: true },
+      description: { type: String, required: false },
+    }],
     criteria: {
       overallCGPA: { type: Number },
       gender: { type: [String] },
       passoutYear: { type: Number },
-      anyLiveKTs: { type: String },
+      // FIXED: Changed type to Number
+      anyLiveKTs: { type: Number },
       anyGapDuringEducation: { type: [String] },
       department: { type: [String] },
       tenthMarks: { type: Number },
@@ -88,7 +93,7 @@ const CompanySchema: Schema<Company> = new Schema(
     ],
     willingnessRequests: {
       students: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-      deadline: { type: Date},
+      deadline: { type: Date },
     },
     notWillingStudents: [
       {
@@ -98,16 +103,15 @@ const CompanySchema: Schema<Company> = new Schema(
     ],
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "TPC", 
+      ref: "TPC",
       required: true,
     },
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
 
 const CompanyModel = mongoose.models.Company || mongoose.model<Company>("Company", CompanySchema);
 
 export default CompanyModel;
-

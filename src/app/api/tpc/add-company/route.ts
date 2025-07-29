@@ -96,7 +96,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         };
 
      
-        const allRounds = [eligibleStudents,acceptStudents, ...rounds]; 
+      const filteredUserRounds = rounds.filter(
+  (round: { roundName: string }) =>
+    !["Eligible Students", "Accept Willingness Students"].includes(round.roundName)
+);
+
+const allRounds = [eligibleStudents, acceptStudents, ...filteredUserRounds];
 
 
         const newCompany = new CompanyModel({

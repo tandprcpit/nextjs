@@ -74,7 +74,7 @@ export default function AddCompanyForm() {
       
       location: '',
       bond: '',
-      profiles: [{ companyPositionTitle: '', package: 0 }],
+      profiles: [{ companyPositionTitle: '', package: 0 ,description:''}],
       criteria: {
         overallCGPA: 0,
         gender: [],
@@ -188,55 +188,41 @@ export default function AddCompanyForm() {
                 {...form.register('bond')}
                 className="w-full"
               />
-            </div><br />
-            <div className="space-y-4">
-  <h3 className="text-xl font-semibold text-primary1 border-b border-accent1-1 pb-2 mb-4">Profiles</h3>
-  {profileFields.map((field, index) => (
-    <div key={field.id} className="flex items-end space-x-4">
-      <div className="flex-grow space-y-2">
-        <label htmlFor={`role-${index}`} className="text-sm font-medium text-primary1">Role</label>
-        <Input
-          id={`role-${index}`}
-          placeholder="e.g. Software Engineer"
-          {...form.register(`profiles.${index}.companyPositionTitle` as const)
-}
-          className="w-full"
-        />
-      </div>
-      <div className="flex-grow space-y-2">
-        <label htmlFor={`salary-${index}`} className="text-sm font-medium text-primary1">Salary (LPA)</label>
-        <Input
-          id={`salary-${index}`}
-          type="number"
-          placeholder="e.g. 6.5"
-          {...form.register(`profiles.${index}.package` as const, { valueAsNumber: true })
-}
-          className="w-full"
-        />
-      </div>
-      <Button
-        type="button"
-        variant="destructive"
-        size="icon"
-        onClick={() => removeProfile(index)}
-        disabled={profileFields.length === 1}
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
-    </div>
-  ))}
-
-  <Button
-    type="button"
-    variant="outline"
-    size="sm"
-    onClick={() => appendProfile({ companyPositionTitle: '', package: 0 })}
-    className="bg-accent1-2 hover:bg-accent1-2/90 text-primary1"
-  >
-    <Plus className="h-4 w-4 mr-2" /> Add Profile
-  </Button>
-</div>
-
+            </div><br /><br />
+            {/* Section 2: Profiles */}
+        <div className="space-y-6">
+          <h3 className="text-xl font-semibold text-primary1 border-b pb-2">Job Profiles</h3>
+          {profileFields.map((field, index) => (
+            <div key={field.id} className="flex flex-col gap-4 border p-4 rounded-lg bg-gray-50/50 relative">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label htmlFor={`role-${index}`} className="text-sm font-medium text-primary1">Role / Position Title</label>
+                  <Input id={`role-${index}`} placeholder="e.g. Software Engineer" {...form.register(`profiles.${index}.companyPositionTitle` as const)} />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor={`salary-${index}`} className="text-sm font-medium text-primary1">Package (LPA)</label>
+                  <Input id={`salary-${index}`} type="number" step="0.1" placeholder="e.g. 6.5" {...form.register(`profiles.${index}.package` as const, { valueAsNumber: true })} />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label htmlFor={`description-${index}`} className="text-sm font-medium text-primary1">Role Description</label>
+                <Controller
+                  name={`profiles.${index}.description`}
+                  control={form.control}
+                  render={({ field }) => <ReactQuill theme="snow" value={field.value} onChange={field.onChange} className="h-40 bg-white" />}
+                />
+              </div>
+              <div className="flex justify-end pt-2">
+                <Button type="button" variant="destructive" size="icon" onClick={() => removeProfile(index)} disabled={profileFields.length === 1}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          ))}
+          <Button type="button" variant="outline" size="sm" onClick={() => appendProfile({ companyPositionTitle: '', package: 0, description: '' })} className="bg-accent1-2 hover:bg-accent1-2/90 text-primary1">
+            <Plus className="h-4 w-4 mr-2" /> Add Profile
+          </Button>
+        </div>
             <div className="space-y-2 md:col-span-2 mb-10">
               <label htmlFor="description" className="text-sm font-medium text-primary1">
                 Description
