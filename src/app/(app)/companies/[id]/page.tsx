@@ -39,17 +39,6 @@ interface Company {
     reason: string
   }[]
 }
-// CompanyDetails.tsx
-export interface CompanyDetailsProps {
-  name: string;
-  description: string;
-  location: string;
-  bond: string;
-  profiles: {
-    companyPositionTitle: string;
-    package: number;
-  }[];
-}
 
 
 export default function StudentCompanyPage() {

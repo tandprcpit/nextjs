@@ -86,12 +86,13 @@ export default function CompaniesPage() {
                     <MapPin className="w-4 h-4 mr-2" />
                     {company.location}
                   </div>
-                  {company.profiles.map((profile, idx) => (
-  <div key={idx} className="flex items-center text-sm text-[#874F41]">
-    <Banknote className="w-4 h-4 mr-2" />
-    {profile.companyPositionTitle} - ₹{profile.package} LPA
-  </div>
+                  {Array.isArray(company.profiles) && company.profiles.map((profile, idx) => (
+  <div key={idx} className="flex items-center text-sm text-[#874F41]">
+    <Banknote className="w-4 h-4 mr-2" />
+    {profile.companyPositionTitle} - ₹{profile.package} LPA
+  </div>
 ))}
+
 
                 </CardContent>
                 <CardFooter className="text-xs text-gray-500 flex items-center">
