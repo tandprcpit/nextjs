@@ -299,17 +299,17 @@ export function SelectionRounds({
         <Tabs defaultValue={rounds[0]?.roundNumber.toString()}>
           <TabsList className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 mb-6">
             {rounds.map((round) => (
-              <TabsTrigger
-                key={round.roundNumber}
-                value={round.roundNumber.toString()}
-                className="data-[state=active]:bg-[#244855] data-[state=active]:text-white"
-              >
-                Round {round.roundNumber}
-              </TabsTrigger>
-            ))}
+  <TabsTrigger
+    key={`trigger-${round.roundNumber}`}
+    value={round.roundNumber.toString()}
+    className="data-[state=active]:bg-[#244855] data-[state=active]:text-white"
+  >
+    Round {round.roundNumber}
+  </TabsTrigger>
+))}
           </TabsList>
-          {rounds.map((round) => (
-            <TabsContent key={round.roundNumber} value={round.roundNumber.toString()}>
+        {rounds.map((round) => (
+  <TabsContent key={`content-${round.roundNumber}`} value={round.roundNumber.toString()}>
               <h3 className="mt-20 text-xl font-semibold text-[#244855] mb-4">{round.roundName}</h3>
               <div className="mb-4">
                 <Input
