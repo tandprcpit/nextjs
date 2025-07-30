@@ -324,7 +324,7 @@ export default function SingleCompanyPage() {
                   <div key={index} className="border rounded-lg p-4 bg-white shadow-sm">
                     <div className="flex justify-between items-start mb-3">
                       <h4 className="font-semibold text-[#244855] text-lg">{profile.companyPositionTitle}</h4>
-                      <Badge variant="secondary" className="bg-[#E64833] text-white text-sm px-3 py-1">
+                      <Badge variant="secondary" className="bg-[#ffffff] text-[#244855] border-[#244855] text-sm px-3 py-1">
                         ₹{profile.package} LPA
                       </Badge>
                     </div>
@@ -335,8 +335,6 @@ export default function SingleCompanyPage() {
                 ))}
               </div>
             </div>
-
-           
 
             {/* Company Description */}
   <div>
@@ -432,7 +430,7 @@ export default function SingleCompanyPage() {
                 <label className="text-sm font-medium text-[#244855]">Required Skills</label>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {company.criteria.skills.map((skill, index) => (
-                    <Badge key={index} className="bg-[#E64833] text-white">
+                    <Badge key={index} className="bg-[#ffffff] text-[#244855] border-[#244855]">
                       {skill}
                     </Badge>
                   ))}
