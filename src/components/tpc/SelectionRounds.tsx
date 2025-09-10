@@ -27,7 +27,7 @@ interface PlacementDetails {
 interface Student {
   _id: string
   firstName: string
-  middleName:string
+  middleName: string
   lastName: string
   email: string
   department: string
@@ -90,7 +90,7 @@ export function SelectionRounds({
   placedStudents = []
 }: SelectionRoundsProps) {
   const [selectedStudents, setSelectedStudents] = useState<{ [key: number]: Set<string> }>({})
-  console.log("selectedStudents",selectedStudents)
+  console.log("selectedStudents", selectedStudents)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
   const [placementDialogOpen, setPlacementDialogOpen] = useState(false)
@@ -296,11 +296,11 @@ export function SelectionRounds({
         <CardTitle className="text-2xl font-bold text-[#244855]">Selection Rounds</CardTitle>
       </CardHeader>
       <CardContent className="pt-6">
-        <Tabs defaultValue={rounds[0]?.roundNumber.toString()}>
+        <Tabs defaultValue={rounds[1]?.roundNumber.toString()}>
           <TabsList className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 mb-6">
             {rounds.map((round) => (
               <TabsTrigger
-                key={round.roundNumber}
+                 key={round.roundNumber}
                 value={round.roundNumber.toString()}
                 className="data-[state=active]:bg-[#244855] data-[state=active]:text-white"
               >
@@ -309,7 +309,7 @@ export function SelectionRounds({
             ))}
           </TabsList>
           {rounds.map((round) => (
-            <TabsContent key={round.roundNumber} value={round.roundNumber.toString()}>
+            <TabsContent key={`content-${round.roundNumber}`} value={round.roundNumber.toString()}>
               <h3 className="mt-20 text-xl font-semibold text-[#244855] mb-4">{round.roundName}</h3>
               <div className="mb-4">
                 <Input

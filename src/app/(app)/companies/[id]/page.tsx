@@ -19,7 +19,10 @@ interface Company {
   name: string
   description: string
   location: string
-  salary: number
+  profiles: {
+    companyPositionTitle: string;
+    package: number;
+  }[];
   bond: string
   criteria: any
   rounds: {
@@ -36,6 +39,7 @@ interface Company {
     reason: string
   }[]
 }
+
 
 export default function StudentCompanyPage() {
   const [company, setCompany] = useState<Company | null>(null)
@@ -161,7 +165,7 @@ export default function StudentCompanyPage() {
           name={company.name}
           description={company.description}
           location={company.location}
-          salary={company.salary}
+          profiles={company.profiles}
           bond={company.bond}
         />
         <EligibilityCriteria criteria={company.criteria} />

@@ -12,7 +12,7 @@ interface Company {
   _id: string
   name: string
   location: string
-  salary: number
+  profiles: { companyPositionTitle: string; package: number; description:string; }[]
   createdAt: string
 }
 
@@ -86,10 +86,14 @@ export default function CompaniesPage() {
                     <MapPin className="w-4 h-4 mr-2" />
                     {company.location}
                   </div>
-                  <div className="flex items-center text-sm text-[#874F41]">
-                    <Banknote className="w-4 h-4 mr-2" />
-                    ₹{company.salary} LPA
-                  </div>
+                  {Array.isArray(company.profiles) && company.profiles.map((profile, idx) => (
+  <div key={idx} className="flex items-center text-sm text-[#874F41]">
+    <Banknote className="w-4 h-4 mr-2" />
+    {profile.companyPositionTitle} - ₹{profile.package} LPA
+  </div>
+))}
+
+
                 </CardContent>
                 <CardFooter className="text-xs text-gray-500 flex items-center">
                   <Calendar className="w-4 h-4 mr-2" />

@@ -5,11 +5,14 @@ interface CompanyDetailsProps {
   name: string
   description: string
   location: string
-  salary: number
+  profiles: {
+    companyPositionTitle: string
+    package: number
+  }[]
   bond: string
 }
 
-export function CompanyDetails({ name, description, location, salary, bond }: CompanyDetailsProps) {
+export function CompanyDetails({ name, description, location, profiles, bond }: CompanyDetailsProps) {
   return (
     <Card className="md:col-span-2 bg-white shadow-lg">
       <CardHeader className="border-b border-gray-200">
@@ -21,25 +24,30 @@ export function CompanyDetails({ name, description, location, salary, bond }: Co
             <MapPin className="w-5 h-5 mr-2 text-[#E64833]" />
             <span className="text-gray-700">{location}</span>
           </div>
-          <div className="flex items-center">
-            <Banknote className="w-5 h-5 mr-2 text-[#E64833]" />
-            <span className="text-gray-700">₹{salary} LPA</span>
-          </div>
+
+          {profiles.map((profile, index) => (
+            <div className="flex items-center" key={index}>
+              <Banknote className="w-5 h-5 mr-2 text-[#E64833]" />
+              <span className="text-gray-700">
+                {profile.companyPositionTitle}: ₹{profile.package} LPA
+              </span>
+            </div>
+          ))}
+
           <div className="flex items-center">
             <FileText className="w-5 h-5 mr-2 text-[#E64833]" />
             <span className="text-gray-700">Bond: {bond}</span>
           </div>
         </div>
+
         <div className="mt-6">
           <h3 className="text-xl font-semibold text-[#244855] mb-2">Description</h3>
           <p
             className="text-gray-700 leading-relaxed"
             dangerouslySetInnerHTML={{ __html: description }}
           ></p>
-
         </div>
       </CardContent>
     </Card>
   )
 }
-
